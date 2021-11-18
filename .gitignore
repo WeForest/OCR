@@ -3,3 +3,7 @@ modeling/
 venv/
 
 config/secret_key.txt
+
+.idea/
+
+.gitignore
