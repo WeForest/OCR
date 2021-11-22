@@ -54,7 +54,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
 
-#MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../uploadfiles'))
+#MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../img'))
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
