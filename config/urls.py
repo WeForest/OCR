@@ -21,3 +21,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('client/', include('client_certification.urls'), name='client'),
 ]
+

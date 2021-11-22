@@ -10,13 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 """
-본 프로젝트에서는 두가지 app이 존재한다
+본 프로젝트에서는 두가지 app이 존재한다 
 1. client의 접속 이미지에 대한 컨퍼런스 참여 여부 반환 api 
 2. 크롤링을 통해 IT 컨퍼런스 데이터를 불러오는 app
 """
 
 from pathlib import Path
 from decouple import config
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -47,6 +48,13 @@ INSTALLED_APPS = [
     'client_certification',
     'crawling',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny',),
+    'PAGE_SIZE': 10
+}
+
+#MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../uploadfiles'))
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
