@@ -1,9 +1,11 @@
 modeling/
 
-venv/
+virtualenv/
 
 config/secret_key.txt
 
 .idea/
 
 .gitignore
+
+app/__pycached__/
