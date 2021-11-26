@@ -9,6 +9,7 @@ app.debug = True
 def upload_file():
     data = request.fiels['image']   # data로 된 데이터 가져옴
     data.save(secure_filename(data.filename))
+    
     if data == 0 :
         return None
     return str(False)
@@ -20,7 +21,7 @@ def abuse():
     
     if data == 0 :
         return None
-    return str(False)
+    return 'None'
 
 
 
