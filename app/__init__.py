@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
-from werkzeug import secure_filename
-from PIL import Image
+#from werkzeug import secure_filename
+#from PIL import Image
 
 app = Flask(__name__)
 app.debug = True
@@ -9,7 +9,7 @@ app.debug = True
 @app.route('/fileUpload', methods=['POST'])
 def upload_file():
     data = request.fiels['image']   # data로 된 데이터 가져옴
-    data.save(secure_filename(data.filename))
+    #data.save(secure_filename(data.filename))
     
     d = {'success' : True, 'conference' : 'conferenceName', 'name':'idonknow'}
     return jsonify(d)
@@ -25,3 +25,4 @@ def abuse():
 
 
 
+app.run(host='127.0.0.1', port=5000)
