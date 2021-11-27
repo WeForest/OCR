@@ -12,7 +12,7 @@ def upload_file():
     data.save(secure_filename(data.filename))
     
     d = {'success' : True, 'conference' : 'conferenceName', 'name':'idonknow'}
-    return str(False)
+    return jsonify(d)
 
 # 혐오, 욕설 검출
 @app.route('/abuse', methods=['GET'])
