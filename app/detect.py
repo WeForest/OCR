@@ -21,7 +21,7 @@ from .utils.torch_utils import select_device, load_classifier, time_synchronized
 def detect(save_img=False):
     save_dir = './yolo'
     my_source = './img'
-    my_weights = './client_certification/weight/detect/best.pt'
+    my_weights = './weight/detect/best.pt'
     my_img_size = 640
     conf_thres = 0.25
     iou_thres = 0.01

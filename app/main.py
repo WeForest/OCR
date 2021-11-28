@@ -106,8 +106,9 @@ def detect(save_img=False):
     set_logging()
     device = select_device(my_device)
     if os.path.exists(out):  # output dir
-        shutil.rmtree(out)  # delete dir
-    os.makedirs(out)  # make new dir
+        shutil.rmtree('./yolo', ignore_errors=True)  # delete dir
+
+    #os.makedirs(out)  # make new dir
     half = device.type != 'cpu'  # half precision only supported on CUDA
 
     # Load model
@@ -320,6 +321,7 @@ def run(target):
                 page.save(f'{img_dir}/{os.path.basename(i)[:-4]}_page{j + 1:0>2d}.jpg')
         elif ext.lower() == '.jpg' or ext.lower() == '.png':
             img = cv2.imread(i, 0)
+            print(img)
             cv2.imwrite('{}/{}.jpg'.format(img_dir, os.path.basename(i)[:-4]), img)
         elif ext.lower() == '.tif':
             img = cv2.imread(i, 0)
@@ -335,7 +337,6 @@ def run(target):
     #    pre_img = pr.skewCorrection(im)
     #    cv2.imwrite('./img/pre_{}'.format(os.path.basename(im)), pre_img)
     #    os.remove(im)
-    print('hello world')
     with torch.no_grad():
         detect()
 
@@ -363,7 +364,7 @@ def run(target):
     model = torch.nn.DataParallel(model).to(device)
     print('loading pretrained model from %s' % './weight/recognize/best_accuracy.pth')
     model.load_state_dict(torch.load('./weight/recognize/best_accuracy.pth', map_location=device))
-
+    
     AlignCollate_demo = AlignCollate(imgH=32, imgW=100)
     demo_data = RawDataset(root='./temp')  # use RawDataset
     demo_loader = torch.utils.data.DataLoader(
@@ -410,17 +411,14 @@ def run(target):
                 log.write(f'{img_name:25s}\t{pred:25s}\t{confidence_score:0.4f}\n')
 
             log.close()
+    print(data)
     for file in os.listdir('./img/'):
         os.remove("./img/{}".format(file))
     for k in glob.glob('./temp/*.jpg'):
         os.remove(k)
-    return " ".join(data)
-#target = ['../data.jpg']
-#data = run(target)
-#print(data)
-# 내가 전송받는 이미지는 바이트파일이다.
-# target = ['./test/10-20190207162430645.jpg']
-target = ['../10-20190207162430645.jpg']
+    return data
+
+target = ['.png/png']
 data = run(target)
 print(data)
 
