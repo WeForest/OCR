@@ -69,7 +69,9 @@ app = Flask(__name__)
 @app.route('/fileUpload', methods=['POST'])
 def upload_file():
     data = Image.open(request.files['image'])   # data로 된 데이터 가져옴
+    #data = cv2.imread(request.files['image'], cv2.IMREAD_UNCHANGED)
     data.save('./img/data.png', 'png')
+    #cv2.imwrite('data.png', './img/')
     
     target = ['./img/data.png']
     data = run(target)
@@ -410,7 +412,7 @@ def run(target):
     model = torch.nn.DataParallel(model).to(device)
     print('loading pretrained model from %s' % './weight/recognize/best_accuracy.pth')
     model.load_state_dict(torch.load('./weight/recognize/best_accuracy.pth', map_location=device))
-    
+    print('load ending')
     AlignCollate_demo = AlignCollate(imgH=32, imgW=100)
     demo_data = RawDataset(root='./temp')  # use RawDataset
     demo_loader = torch.utils.data.DataLoader(
@@ -510,14 +512,7 @@ class BERTDataset(Dataset):
         return (len(self.labels))
 
 def predict(predict_sentence):
-
-    device = torch.device("cpu")
-    bertmodel, vocab = get_pytorch_kobert_model()
-    model = BERTClassifier(bertmodel,  dr_rate=0.5)
-    model.load_state_dict(torch.load('./weight/nlp/model.pt', map_location=device))
-
-    tokenizer = get_tokenizer()
-    tok = nlp.data.BERTSPTokenizer(tokenizer, vocab, lower=False)
+    print('predict 호출')
 
     data = [predict_sentence, '0']
     dataset_another = [data]
@@ -525,17 +520,17 @@ def predict(predict_sentence):
     another_test = BERTDataset(dataset_another, 0, 1, tok, max_len, True, False)
     test_dataloader = torch.utils.data.DataLoader(another_test, batch_size=batch_size, num_workers=5)
     
-    model.eval()
-
+    nlp_model.eval()
+    print('model eval 실행')
     for batch_id, (token_ids, valid_length, segment_ids, label) in enumerate(test_dataloader):
         token_ids = token_ids.long().to(device)
         segment_ids = segment_ids.long().to(device)
-
+        print('check1')
         valid_length= valid_length
         label = label.long().to(device)
-
-        out = model(token_ids, valid_length, segment_ids)
-
+        print('check2')
+        out = nlp_model(token_ids, valid_length, segment_ids)
+        print('check3')
 
         test_eval=[]
         for i in out:
@@ -552,5 +547,20 @@ def predict(predict_sentence):
 
 
 if __name__ == '__main__':
+    global nlp_model
+    global detect_model
+    global recognize_model
+    global tokenizer
+    global tok
+    
+
+    device = torch.device("cpu")
+    bertmodel, vocab = get_pytorch_kobert_model()
+    nlp_model = BERTClassifier(bertmodel,  dr_rate=0.5)
+    nlp_model.load_state_dict(torch.load('./weight/nlp/model.pt', map_location=device))
+
+    tokenizer = get_tokenizer()
+    tok = nlp.data.BERTSPTokenizer(tokenizer, vocab, lower=False)
+    
     app.run(host='0.0.0.0', port=5000, debug=True)
 
