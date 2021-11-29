@@ -530,7 +530,7 @@ def predict(predict_sentence):
         label = label.long().to(device)
         print('check2')
         out = nlp_model(token_ids, valid_length, segment_ids)
-        print('check3')
+        print()
 
         test_eval=[]
         for i in out:
