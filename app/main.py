@@ -222,9 +222,11 @@ def convertCoordination():
     my_loc=[]
     len_loc = []
     txt_path = r'./yolo/'
-    txt_dir = glob.glob(txt_path + '/*.txt')
+    #txt_dir = glob.glob(txt_path + '/*.txt')
+    txt_dir = glob.glob('./yolo/*.txt')
     img_path = r'./img/'
-    img_dir = glob.glob(img_path + '/*.jpg')
+    #img_dir = glob.glob(img_path + '/*.jpg')
+    img_dir = glob.glob(img_path + '/*.png')
     for _img,_txt in zip(img_dir, txt_dir):
         #빈 리스트 생성
         coordinate = []
@@ -244,6 +246,7 @@ def convertCoordination():
             r = int((x + w / 2) * dw)
             t = int((y - h / 2) * dh)
             b = int((y + h / 2) * dh)
+            '''
             # 좌표 후처리(없어도 무관)
             # left 값이 - 일 경우 0으로 저장
             if l < 0:
@@ -257,13 +260,14 @@ def convertCoordination():
             # bottom 값이 (전체 이미지 사이즈) - 1 보다 클 경우
             if b > dh - 1:
                 b = dh - 1
+            '''
             #리스트에 저장
             coordinate.append([l,t,r-l,b-t])
         coordinate.sort(key=lambda x : x[1])
         
         s = []
         loc = []
-        for i in range(1 , len(coordinate)):
+        for i in range(len(coordinate)):
             if abs( coordinate[i-1][1] - coordinate[i][1] ) < 10:
                 s.append(coordinate[i-1])
             else:
@@ -274,21 +278,18 @@ def convertCoordination():
                     s.sort(key=lambda x :x[0])
                     loc.append(s)
                     s = []
-                    
         s.append(coordinate[i-1])
         s.sort(key=lambda x :x[0])
-        loc.append(s)
 
         len_loc.append(list(map(lambda x :len(x),loc)))
         my_loc.append(list(itertools.chain(*loc)))
-        
     return len_loc,my_loc
 
 #만들어낸 loc 리스트를 불러와 좌표값에 따른 이미지 추출하여 저장
 def read_img_by_coord (loc):
     img_list=[]
     img_path = r'./img/'
-    img_dir = glob.glob(img_path + '/*.jpg')
+    img_dir = glob.glob(img_path + '/*.png')
     for _img,_loc in zip(img_dir, loc):
         print("make image", os.path.basename(_img[:-4]))
         org_image = cv2.imread(_img,cv2.IMREAD_GRAYSCALE)
@@ -315,16 +316,9 @@ def run(target):
 
     for i in target:
         ext = os.path.splitext(i)[-1]
-        if ext.lower() == '.pdf':
-            pages = convert_from_path(i, dpi=200, poppler_path='./poppler-0.68.0/bin')
-            for j, page in enumerate(pages):
-                page.save(f'{img_dir}/{os.path.basename(i)[:-4]}_page{j + 1:0>2d}.jpg')
-        elif ext.lower() == '.jpg' or ext.lower() == '.png':
+        if ext.lower() == '.jpg' or ext.lower() == '.png':
             img = cv2.imread(i, 0)
             print(img)
-            cv2.imwrite('{}/{}.jpg'.format(img_dir, os.path.basename(i)[:-4]), img)
-        elif ext.lower() == '.tif':
-            img = cv2.imread(i, 0)
             cv2.imwrite('{}/{}.jpg'.format(img_dir, os.path.basename(i)[:-4]), img)
 
     result = [[] for _ in range(len(target))]
@@ -341,7 +335,7 @@ def run(target):
         detect()
 
     len_loc, loc = convertCoordination()
-
+    print('len_loc : ' + str(len_loc))
     for i in range(len(len_loc)):
         for j in range(1, len(len_loc[i])):
             len_loc[i][j] = len_loc[i][j] + len_loc[i][j - 1]
@@ -411,7 +405,6 @@ def run(target):
                 log.write(f'{img_name:25s}\t{pred:25s}\t{confidence_score:0.4f}\n')
 
             log.close()
-    print(data)
     for file in os.listdir('./img/'):
         os.remove("./img/{}".format(file))
     for k in glob.glob('./temp/*.jpg'):
