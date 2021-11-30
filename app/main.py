@@ -313,14 +313,14 @@ def run(target):
     predict = []
     data = []
     img_dir = './img'
-
+    '''
     for i in target:
         ext = os.path.splitext(i)[-1]
         if ext.lower() == '.jpg' or ext.lower() == '.png':
             img = cv2.imread(i, 0)
             print(img)
-            cv2.imwrite('{}/{}.jpg'.format(img_dir, os.path.basename(i)[:-4]), img)
-
+            cv2.imwrite('{}/{}.png'.format(img_dir, os.path.basename(i)[:-4]), img)
+    '''
     result = [[] for _ in range(len(target))]
 
     # time : 2.855405569076538
