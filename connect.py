@@ -13,9 +13,10 @@ files = {'image': open('png.png', 'rb')}
 getdata = requests.post(myurl, files=files)
 print(getdata.text)  
 '''
+names = ''
+data = ['전도업', '2021', '대전광역시', '제56외', '전국기능경기대회', 'kormhwwwwwwwworar', '선수', '모바일로보틱스']
+for i in data:
+    if len(i) <= 3:
+        names = names + i + ","
+print(names)
 
-
-a = ['삼성', '주니어', '소프트웨어', '창작대회']
-b = ['김보석', '주니어', '삼성', '소프트웨어', '보이즈', '창작대회']
-if a in b :
-    print('he')
